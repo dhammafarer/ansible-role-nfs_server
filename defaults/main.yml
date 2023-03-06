@@ -4,3 +4,7 @@ exports_entries:
   - dir: /srv/nfs
     host: 192.168.121.1
     options: "sync,no_subtree_check,rw"
+
+  - dir: /srv/something
+    host: 192.168.121.2
+    options: "sync,no_subtree_check,rw"
