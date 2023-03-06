@@ -1,0 +1,14 @@
+---
+# handlers file for nfs_server
+- name: Restart nfs-server.
+  become: true
+  ansible.builtin.command:
+    cmd: "exportfs -arv"
+  changed_when: true
+
+- name: Ensure firewall is restarted.
+  become: true
+  ansible.builtin.service:
+    service: firewalld
+    state: restarted
+    enabled: true

@@ -1,0 +1,6 @@
+---
+# defaults file for nfs_server
+exports_entries:
+  - dir: /srv/nfs
+    host: 192.168.121.1
+    options: "sync,no_subtree_check,rw"

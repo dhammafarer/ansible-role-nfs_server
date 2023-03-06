@@ -1,0 +1,40 @@
+---
+# tasks file for nfs_server
+- name: Ensure nfs package is installed.
+  become: true
+  ansible.builtin.package:
+    name: nfs-utils
+    state: present
+
+- name: Ensure nfs-server service is started and enabled.
+  become: true
+  ansible.builtin.service:
+    name: nfs-server
+    state: started
+    enabled: true
+
+- name: Ensure nfs service is enabled in firewall.
+  become: true
+  ansible.posix.firewalld:
+    service: nfs
+    state: enabled
+    permanent: true
+  notify: Restart firewalld.
+
+- name: Ensure exported dirs exist.
+  become: true
+  ansible.builtin.file:
+    path: "{{ item.dir }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ exports_entries }}"
+
+- name: Include entries in /etc/exports.
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/exports
+    regex: '^{{ item.dir }} {{ item.host }}'
+    line: "{{ item.dir }} {{ item.host }}({{ item.options }})"
+    state: present
+  loop: "{{ exports_entries }}"
+  notify: Reload nfs-server.
